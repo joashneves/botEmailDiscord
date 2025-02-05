@@ -1,0 +1,6 @@
+discord
+autopep8
+python-dotenv
+sqlalchemy
+audioop-lts
+pytz
