@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "EmailDiscordbot"
+version = "0.1.0"
+description = "A Discord bot implemented in Python"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Joas Neves", email = "joashneves@gmail.com" }]
+dependencies = [
+    "discord.py",
+    "autopep8",
+    "python-dotenv",
+    "pytest",
+    "dpytest",
+    "pre-commit",
+    "sqlalchemy",
+    "pytz"
+]
+requires-python = ">=3.11.9"
+
+[tool.poetry.dependencies]
+python = "^3.11.9"
+
+[project.scripts]
+discord-bot = "main"
+
+[tool.setuptools.packages.find]
+include = ["src"]

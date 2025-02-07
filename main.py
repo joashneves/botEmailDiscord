@@ -26,7 +26,7 @@ async def on_ready():
     await carregar_comandos()
     await bot.change_presence(
         activity=discord.Activity(
-        type=discord.ActivityType.watching,
-        name="Por todo tempo e espaço"))
+        type=discord.ActivityType.competing,
+        name="Entragando email's!!"))
 
 bot.run(TOKEN)
