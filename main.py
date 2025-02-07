@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 from pathlib import Path
+from models.db import _Sessao
 
 load_dotenv()
 
@@ -24,6 +25,12 @@ bot = commands.Bot(command_prefix="$", intents=permissoes)
 async def on_ready():
     print("Iniciando")
     await carregar_comandos()
+    try:
+        synced = await bot.tree.sync()
+        print(f"Comandos sincronizados {len(synced)} comandos")
+    except Exception as e:
+        print("Erro ao sincronizar comandos de barra: {e}")
+
     await bot.change_presence(
         activity=discord.Activity(
         type=discord.ActivityType.competing,

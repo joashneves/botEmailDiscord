@@ -1,6 +1,6 @@
 from models.db import _Sessao, Usuario, Seguindo, UsuariosBanidos
 
-class Manipular_Servidor:
+class Manipular_Usuario:
     def Obter_usuario(id_discord: int):
         with _Sessao() as sessao:
             usuario = sessao.query(Usuario).filter_by(id_discord=id_discord).first()
@@ -23,6 +23,7 @@ class Manipular_Servidor:
                     id_ServidorBase=id_ServidorBase)
                 sessao.add(NovoUsuario)
                 print(f"Usuario criado {NovoUsuario}")
+                sessao.commit()
                 return "Usuario criado"
             return "Usuario ja existe"
         
@@ -30,7 +31,7 @@ class Manipular_Servidor:
         with _Sessao() as sessao:
             usuario = sessao.query(Usuario).filter_by(id_discord=id_discord).first()
             if not Usuario:
-                return "Usuario não registrado"
+                return None
             usuario.post += 1;
             sessao.commit()
             return usuario
