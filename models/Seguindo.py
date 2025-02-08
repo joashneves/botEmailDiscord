@@ -9,7 +9,15 @@ class Manipular_seguidor:
                 return None
             print("Seguidores", seguidores)
             return seguidores
-
+    def Obter_seguindo(id_pessoa_seguindo):
+        with _Sessao() as sessao:
+            seguindo_lista = sessao.query(Seguindo).filter_by(id_usuario_seguidor=id_pessoa_seguindo).all()
+            if not seguindo_lista:
+                print("não segue ninguem")
+                return None
+            print("Seguindo:", seguindo_lista.count)
+            return seguindo_lista
+            
     def Seguir_pessoa(id_pessoa_seguir, id_alvo):
         with _Sessao() as sessao:
             seguidores = sessao.query(Seguindo).filter_by(id_usuario_seguidor=id_pessoa_seguir,id_usuario_alvo=id_alvo).first()
