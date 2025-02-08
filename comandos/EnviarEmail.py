@@ -3,14 +3,21 @@ from discord.ext import commands
 from discord import app_commands
 from models.Servidor import Manipular_Servidor
 from models.Usuario import Manipular_Usuario
+from models.Seguindo import Manipular_seguidor
+from datetime import datetime
+import pytz
 
 class EmailView(discord.ui.View):
-    def __init__(self, interaction, titulo, mensagem, imagem):
+    def __init__(self, interaction, apelido, titulo, mensagem, imagem, link):
         super().__init__(timeout=None)
         self.interaction = interaction
+        self.apelido = apelido
         self.titulo = titulo
         self.mensagem = mensagem
         self.imagem = imagem
+        self.link = link
+        self.fuso_brasilia = pytz.timezone("America/Sao_Paulo")
+
 
     def get_embem(self):
         embed = discord.Embed(
@@ -20,10 +27,14 @@ class EmailView(discord.ui.View):
         )
         if self.imagem:
             embed.set_image(url=self.imagem)
+        agora = datetime.now(self.fuso_brasilia)
+        agora_formatado = agora.strftime("%d/%m/%y")
         embed.set_footer(
-                text=f"Enviado por: {self.interaction.user.name}",
-                icon_url=self.interaction.user.display_avatar.url,
+                text=f"Enviado em: {agora_formatado}",
             )
+        embed.set_author(name=self.apelido, icon_url=self.interaction.user.display_avatar.url)
+        if self.link:
+            embed.set_author(name=self.apelido, icon_url=self.interaction.user.display_avatar.url, url=self.link)
         return embed
 
 class EnviarEmail(commands.Cog):
@@ -31,14 +42,16 @@ class EnviarEmail(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="enviar_postagem", description="Envia um post para todos os servidores e quem te segue")
-    async def EnviarEmail(self, interaction: discord.Interaction, titulo: str, mensagem: str, imagem: discord.Attachment):
+    async def EnviarEmail(self, interaction: discord.Interaction, titulo: str, mensagem: str, imagem: discord.Attachment = None, link:str = None):
         id_usuario = interaction.user.id
+        imagem = (imagem or None)
+        link = (link or None)
         print(interaction)
         usuario = Manipular_Usuario.Obter_usuario(id_usuario)
         if not usuario:
             await interaction.response.send_message("Voce não criou uma conta", ephemeral=True)
             return
-        view = EmailView(interaction, titulo, mensagem, imagem)
+        view = EmailView(interaction, usuario.apelido, titulo, mensagem, imagem, link)
         embedEmail = view.get_embem()
         feeds_lista = Manipular_Servidor.Obter_todos_feeds()
         print(feeds_lista)
@@ -50,7 +63,16 @@ class EnviarEmail(commands.Cog):
                         await channel.send(embed=embedEmail, view=view)
                     except discord.DiscordException as error:
                         print(f"Erro ao enviar mensagem para {channel.name} : {error}")
-        
+        dms_seguidores = Manipular_seguidor.Obter_seguidores(id_usuario)
+        if dms_seguidores:
+            for seguidor in dms_seguidores:
+                usuario_atual = interaction.client.get_user(seguidor.id_usuario_seguidor)
+                try:
+                    await usuario_atual.send(embed=embedEmail, view=view)
+                except discord.DiscordException as error:
+                        print(f"Erro ao enviar mensagem para {channel.name} : {error}")
+        Manipular_Usuario.Atualiza_post(interaction.user.id)
+
 
 async def setup(bot):
     await bot.add_cog(EnviarEmail(bot))

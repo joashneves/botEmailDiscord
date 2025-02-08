@@ -25,7 +25,9 @@ class Usuario(Base):
 class Seguindo(Base):
     __tablename__ = "seguindo"
     id = Column(Integer, primary_key=True)
+    # Id da pessoa que esta seguindo o alvo
     id_usuario_seguidor = Column(Integer, ForeignKey("usuario.id"))
+    # Quem a pessoa seguiu
     id_usuario_alvo = Column(Integer, ForeignKey("usuario.id"))
 
 class UsuariosBanidos(Base):
@@ -37,7 +39,7 @@ class UsuariosBanidos(Base):
 class RedesSociais(Base):
     __tablename__ = "redesSocial"
     id = Column(Integer, primary_key=True)
-    id_usuario = Column(Integer, ForeignKey=("usuario.id"))
+    id_usuario = Column(Integer, ForeignKey("usuario.id"))
     nome = Column(String)
     link = Column(String)
 
