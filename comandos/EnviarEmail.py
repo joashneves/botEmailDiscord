@@ -44,15 +44,30 @@ class EmailView(discord.ui.View):
             await interaction.response.send_message("Voce não criou uma conta", ephemeral=True)
             return
         if interaction.user.id == self.usuario.id:
-            await interaction.response.send_message("Voce não pode seguir voce mesmo!", ephemeral=True)
+            await interaction.response.send_message("Voce não pode deixar de seguir voce mesmo!", ephemeral=True)
             return
         elif interaction.user.id != self.usuario.id:
             seguindo = Manipular_seguidor.Seguir_pessoa(interaction.user.id, self.usuario.id)
-            if seguindo:
+            if seguindo == True:
                 await interaction.response.send_message(f"Voce agora esta seguindo {self.usuario.name}!", ephemeral=True)
-            elif seguindo:
+            elif seguindo == False:
                 await interaction.response.send_message(f"Voce ja esta seguindo {self.usuario.name}!", ephemeral=True)
             return
+
+    @discord.ui.button(label="deixar de seguir", style=discord.ButtonStyle.red)
+    async def deixar_seguir(self, interaction: discord.Interaction, button: discord.ui.Button):
+        usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
+        if not usuario:
+            await interaction.response.send_message("Voce não criou uma conta", ephemeral=True)
+            return
+        if interaction.user.id == self.usuario.id:
+            await interaction.response.send_message("Voce não pode seguir voce mesmo!", ephemeral=True)
+            return
+        seguidor = Manipular_seguidor.remover_seguidor(interaction.user.id, self.usuario.id)
+        if seguidor:
+            await interaction.response.send_message(f"Voce deixou de seguir {self.usuario.name}", ephemeral=True)
+        elif seguidor == False:
+            await interaction.response.send_message(f"Voce não segue esse usuario", ephemeral=True)
 
 
 class EnviarEmail(commands.Cog):
