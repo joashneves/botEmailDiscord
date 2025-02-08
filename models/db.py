@@ -18,6 +18,7 @@ class Usuario(Base):
     aceita_dm = Column(Boolean, default=True )
     apelido = Column(String(25))
     descricao = Column(String(255))
+    pronome = Column(String, default="N/a")
     post = Column(Integer)
     id_ServidorBase = Column(Integer, ForeignKey("servidorBase.id"))
 
@@ -32,6 +33,13 @@ class UsuariosBanidos(Base):
     id = Column(Integer, primary_key=True)
     id_usuario_banido = Column(Integer, ForeignKey("usuario.id"))
     motivo = Column(String)
+
+class RedesSociais(Base):
+    __tablename__ = "redesSocial"
+    id = Column(Integer, primary_key=True)
+    id_usuario = Column(Integer, ForeignKey=("usuario.id"))
+    nome = Column(String)
+    link = Column(String)
 
 class FeedConfig(Base):
     __tablename__ = "feedConfig"

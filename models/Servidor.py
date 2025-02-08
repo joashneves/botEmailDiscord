@@ -1,6 +1,18 @@
 from models.db import _Sessao, ServidorBase, FeedConfig
 
 class Manipular_Servidor:
+    def Obter_todos_servidore():
+        with _Sessao() as sessao:
+            listaServidores = sessao.query(ServidorBase).all()
+            print(listaServidores)
+            return listaServidores
+        
+    def Obter_todos_feeds():
+        with _Sessao() as sessao:
+            listaFeeds = sessao.query(FeedConfig).all()
+            print(listaFeeds)
+            return listaFeeds
+
     def Obter_servidor(id_servidor:int):
         with _Sessao() as sessao:
             servidor = sessao.query(ServidorBase).filter_by(id_servidor=id_servidor).first()
