@@ -8,9 +8,9 @@ from datetime import datetime
 import pytz
 
 class EmailView(discord.ui.View):
-    def __init__(self, interaction, apelido, titulo, mensagem, imagem, link):
+    def __init__(self, usuario, apelido, titulo, mensagem, imagem, link):
         super().__init__(timeout=None)
-        self.interaction = interaction
+        self.usuario = usuario
         self.apelido = apelido
         self.titulo = titulo
         self.mensagem = mensagem
@@ -32,10 +32,28 @@ class EmailView(discord.ui.View):
         embed.set_footer(
                 text=f"Enviado em: {agora_formatado}",
             )
-        embed.set_author(name=self.apelido, icon_url=self.interaction.user.display_avatar.url)
+        embed.set_author(name=self.apelido, icon_url=self.usuario.display_avatar.url)
         if self.link:
-            embed.set_author(name=self.apelido, icon_url=self.interaction.user.display_avatar.url, url=self.link)
+            embed.set_author(name=self.apelido, icon_url=self.usuario.display_avatar.url, url=self.link)
         return embed
+
+    @discord.ui.button(label="Seguir", style=discord.ButtonStyle.primary)
+    async def seguir_botao(self, interaction: discord.Interaction, button: discord.ui.Button):
+        usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
+        if not usuario:
+            await interaction.response.send_message("Voce não criou uma conta", ephemeral=True)
+            return
+        if interaction.user.id == self.usuario.id:
+            await interaction.response.send_message("Voce não pode seguir voce mesmo!", ephemeral=True)
+            return
+        elif interaction.user.id != self.usuario.id:
+            seguindo = Manipular_seguidor.Seguir_pessoa(interaction.user.id, self.usuario.id)
+            if seguindo:
+                await interaction.response.send_message(f"Voce agora esta seguindo {self.usuario.name}!", ephemeral=True)
+            elif seguindo:
+                await interaction.response.send_message(f"Voce ja esta seguindo {self.usuario.name}!", ephemeral=True)
+            return
+
 
 class EnviarEmail(commands.Cog):
     def __init__(self, bot):
@@ -51,7 +69,7 @@ class EnviarEmail(commands.Cog):
         if not usuario:
             await interaction.response.send_message("Voce não criou uma conta", ephemeral=True)
             return
-        view = EmailView(interaction, usuario.apelido, titulo, mensagem, imagem, link)
+        view = EmailView(interaction.user, usuario.apelido, titulo, mensagem, imagem, link)
         embedEmail = view.get_embem()
         feeds_lista = Manipular_Servidor.Obter_todos_feeds()
         print(feeds_lista)
