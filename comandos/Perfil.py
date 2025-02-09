@@ -1,11 +1,14 @@
 import discord
 from discord.ext import commands
+from discord.ui import Button
 from discord import app_commands
 from models.Usuario import Manipular_Usuario
 from models.Servidor import Manipular_Servidor
 from models.Seguindo import Manipular_seguidor
+from models.RedeSocial import Manipular_redesSociais
 
 class PerfilView(discord.ui.View):
+    foo : bool = False
     def __init__(self, usuario ,apelido, descricao, pronome, post, id_Servidor):
         super().__init__(timeout=None)
         self.usuario = usuario
@@ -16,6 +19,12 @@ class PerfilView(discord.ui.View):
         self.servidor = Manipular_Servidor.Obter_servidor(id_Servidor)
         quantidade_seguidores = Manipular_seguidor.Obter_seguidores(usuario.id) or []
         self.quantidade_seguidores = len(quantidade_seguidores) or 0
+        redesSociais = Manipular_redesSociais.Obter_redes_de_usuario(usuario.id)
+        for rede in redesSociais:
+            print(rede.link, rede.nome)
+            botao = discord.ui.Button(label=f"{rede.nome}", style=discord.ButtonStyle.link, url=f"{rede.link}")
+            self.add_item(item=botao)
+
     def get_embem(self):
         embed = discord.Embed(
             title=f'Perfil de : {self.apelido}',
@@ -30,7 +39,7 @@ class PerfilView(discord.ui.View):
         return embed
 
     @discord.ui.button(label="Seguir", style=discord.ButtonStyle.primary)
-    async def seguir_botao(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def seguir_botao(self, interaction: discord.Interaction):
         usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
         if not usuario:
             await interaction.response.send_message("Voce não criou uma conta", ephemeral=True)
@@ -47,7 +56,7 @@ class PerfilView(discord.ui.View):
             return
 
     @discord.ui.button(label="deixar de seguir", style=discord.ButtonStyle.red)
-    async def deixar_seguir(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def deixar_seguir(self, interaction: discord.Interaction):
         usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
         if not usuario:
             await interaction.response.send_message("Voce não criou uma conta", ephemeral=True)
@@ -60,7 +69,6 @@ class PerfilView(discord.ui.View):
             await interaction.response.send_message(f"Voce deixou de seguir {self.usuario.name}", ephemeral=True)
         elif seguidor == False:
             await interaction.response.send_message(f"Voce não segue esse usuario", ephemeral=True)
-
 
 
 class Perfil(commands.Cog):
