@@ -18,3 +18,13 @@ class Manipular_redesSociais:
                 sessao.commit()
                 return True
             return None
+
+    def Remover_rede(id_usuario, nome):
+        with _Sessao() as sessao:
+            rede = sessao.query(RedesSociais).filter_by(id_usuario=id_usuario, nome=nome).first()
+            if not rede:
+                print("Usuario não tem rede")
+                return False
+            sessao.delete(rede)
+            sessao.commit()
+            return True

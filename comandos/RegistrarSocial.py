@@ -8,25 +8,6 @@ def find_urls_in_string(string):
     x = string.split()
     return [i for i in x if i.find("https:")==0 or i.find("http:")==0]
 
-class RemoverRedeSelect(discord.ui.Select):
-    def __init__(self):
-        placeholder = "ESCOLHA UMA REDE PARA REMOVER!!!!!"
-        min_values = 1 # the minimum number of values that must be selected by the users
-        max_values = 1 # the maximum number of values that can be selected by the users
-        options=[
-            discord.SelectOption(label="aaaaaa", description="aaaaa"),
-            discord.SelectOption(label="asdasdasd", description="dsfwesf")
-        ]
-        super().__init__(placeholder=placeholder, options=options, min_values=min_values, max_values=max_values)
-
-    async def callback(self, interaction: discord.Interaction):
-        ...
-
-class RemoverRedeView(discord.ui.View):
-    def __init__(self):
-        super().__init__()
-
-
 class RegistrarSocial(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -53,15 +34,27 @@ class RegistrarSocial(commands.Cog):
         await interaction.response.send_message(f"Registrado, Redes : {redesocial} = {link}", ephemeral=True)
 
     @app_commands.command(name="remover_rede", description="remove uma das redes socias")
-    async def remover_rede(self, interaction: discord.Interaction):
-        view = RemoverRedeView()
-        view.add_item(RemoverRedeSelect)
-        redesSociais = Manipular_redesSociais.Obter_redes_de_usuario(interaction.user.id)
+    async def remover_rede(self, interaction: discord.Interaction, rede:str):
+        redes = Manipular_redesSociais.Obter_redes_de_usuario(interaction.user.id)
+        if not redes:
+            await interaction.response.send_message(f"Voce não tem redes", ephemeral=True)
+            return
+        removido_rede = Manipular_redesSociais.Remover_rede(interaction.user.id, rede)
+        if removido_rede:
+            await interaction.response.send_message(f"removido : {rede}", ephemeral=True)
+            return
+        await interaction.response.send_message(f"falha ao remover", ephemeral=True)
 
-        for rede in redesSociais:
-            print(f"{rede.link, rede.nome}")
 
-        await interaction.response.send_message(view=view)
+    @remover_rede.autocomplete('rede')
+    async def remover_rede_autocomplete(self,interact: discord.Interaction, pesquisa:str):
+        print(pesquisa)
+        opcaoes = []
+        redes = Manipular_redesSociais.Obter_redes_de_usuario(interact.user.id)
+        for rede in redes:
+            rede_option = app_commands.Choice(name=f"{rede.nome}", value=f"{rede.nome}")
+            opcaoes.append(rede_option)
+        return opcaoes
 
 async def setup(bot):
     await bot.add_cog(RegistrarSocial(bot))
