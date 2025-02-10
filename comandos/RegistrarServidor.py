@@ -7,7 +7,7 @@ class RegistrarServidor(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="registrar_servidor", description="Registrar servidor, nome deve ser unico, e se tiver espaço mudar para "_"")
+    @app_commands.command(name="registrar_servidor", description="Registrar servidor, nome deve ser unico, e se tiver espaço mudar para _ ")
     @app_commands.describe(email="Nome do @ do servidor MAX 50 caracteres")
     @app_commands.describe(channel="Canal aonde vai enviar as postagens")
     @app_commands.default_permissions(manage_guild=True)
