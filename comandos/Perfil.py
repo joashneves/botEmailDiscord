@@ -39,7 +39,7 @@ class PerfilView(discord.ui.View):
         return embed
 
     @discord.ui.button(label="Seguir", style=discord.ButtonStyle.primary)
-    async def seguir_botao(self, interaction: discord.Interaction):
+    async def seguir_botao(self, interaction: discord.Interaction, button: discord.ui.Button):
         usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
         if not usuario:
             await interaction.response.send_message("Voce não criou uma conta", ephemeral=True)
@@ -56,7 +56,7 @@ class PerfilView(discord.ui.View):
             return
 
     @discord.ui.button(label="deixar de seguir", style=discord.ButtonStyle.red)
-    async def deixar_seguir(self, interaction: discord.Interaction):
+    async def deixar_seguir(self, interaction: discord.Interaction, button: discord.ui.Button):
         usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
         if not usuario:
             await interaction.response.send_message("Voce não criou uma conta", ephemeral=True)
