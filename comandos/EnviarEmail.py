@@ -105,6 +105,7 @@ class EnviarEmail(commands.Cog):
                 except discord.DiscordException as error:
                         print(f"Erro ao enviar mensagem para {channel.name} : {error}")
         Manipular_Usuario.Atualiza_post(interaction.user.id)
+        await interaction.response.send_message("Email enviado a todos!", ephemeral=True)
 
 
 async def setup(bot):
