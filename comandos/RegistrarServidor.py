@@ -6,8 +6,8 @@ from models.Servidor import Manipular_Servidor
 class RegistrarServidor(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
-    @app_commands.command(name="registrar_servidor", description="Registrar servidor")
+
+    @app_commands.command(name="registrar_servidor", description="Registrar servidor, nome deve ser unico, e se tiver espaço mudar para "_"")
     @app_commands.describe(email="Nome do @ do servidor MAX 50 caracteres")
     @app_commands.describe(channel="Canal aonde vai enviar as postagens")
     @app_commands.default_permissions(manage_guild=True)
@@ -16,12 +16,13 @@ class RegistrarServidor(commands.Cog):
                                   email: str,
                                   channel: discord.TextChannel,):
         id_sevidor = interaction.guild.id
-        email_formatada = email.strip()
+        email_formatada = email.split(" ")
+        email_formatada = "_".join(email_formatada)
         id_chat = channel.id
-        print(email_formatada.isalpha())
-        if len(email_formatada) > 50 or email_formatada.isalpha() == False:
+        print(email_formatada)
+        if len(email_formatada) > 50:
             await interaction.response.send_message(f'o {email} passou de 50 caracteres ou não pode ter espaço', ephemeral=True)
-            return 
+            return
         servidor = Manipular_Servidor.Obter_servidor(id_sevidor)
         print(servidor)
         if servidor:
