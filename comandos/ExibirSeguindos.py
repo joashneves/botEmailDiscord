@@ -41,11 +41,11 @@ class ExibirSeguindoView(discord.ui.View):
         elif seguidor == False:
             await interaction.response.send_message(f"Voce não segue esse usuario", ephemeral=True)
 
-    @discord.ui.button(label="<<<", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="<<<", custom_id="botao_anterios_seguindo", style=discord.ButtonStyle.primary)
     async def anterior_botao(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.index = (self.index - 1) % len(self.seguindos)
         await self.get_embem(interaction)
-    @discord.ui.button(label=">>>", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label=">>>", custom_id="botao_anterios_proximo",style=discord.ButtonStyle.primary)
     async def proximo_botao(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.index = (self.index + 1) % len(self.seguindos)
         await self.get_embem(interaction)

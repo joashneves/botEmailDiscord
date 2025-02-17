@@ -36,14 +36,14 @@ class ViewTutorial(discord.ui.View):
         self.add_item(self.Anterior)
         self.add_item(self.Proximo)
 
-    @discord.ui.button(label="⬅", custom_id="tutorial_botao_anterior", style=discord.ButtonStyle.grey)
+    @discord.ui.button(label="<<<", custom_id="tutorial_botao_anterior", style=discord.ButtonStyle.primary)
     async def Anterior(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
         self.index = (self.index - 1) % len(tutorial)
         await interaction.response.edit_message(embed=self.get_embed(), view=self)
 
-    @discord.ui.button(label="➡", custom_id="tutorial_botao_proximo", style=discord.ButtonStyle.grey)
+    @discord.ui.button(label=">>>", custom_id="tutorial_botao_proximo", style=discord.ButtonStyle.primary)
     async def Proximo(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
