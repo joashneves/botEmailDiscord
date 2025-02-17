@@ -25,7 +25,7 @@ class ExibirSeguindoView(discord.ui.View):
         await interaction.response.edit_message(embed=embed, view=self)
         return embed
 
-    @discord.ui.button(label="deixar de seguir", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="deixar de seguir", custom_id="botao_deixar_seguir_seguindo", style=discord.ButtonStyle.red)
     async def deixar_seguir(self, interaction: discord.Interaction, button: discord.ui.Button):
         usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
         if not usuario:

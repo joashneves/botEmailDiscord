@@ -39,7 +39,7 @@ class EmailView(discord.ui.View):
 
         return embed
 
-    @discord.ui.button(label="Seguir", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="Seguir", custom_id="botao_seguir_email", style=discord.ButtonStyle.primary)
     async def seguir_botao(self, interaction: discord.Interaction, button: discord.ui.Button):
         usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
         if not usuario:
@@ -56,7 +56,7 @@ class EmailView(discord.ui.View):
                 await interaction.response.send_message(f"Voce ja esta seguindo {self.usuario.name}!", ephemeral=True)
             return
 
-    @discord.ui.button(label="deixar de seguir", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="deixar de seguir",custom_id="botao_deixar_seguir_email", style=discord.ButtonStyle.red)
     async def deixar_seguir(self, interaction: discord.Interaction, button: discord.ui.Button):
         usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
         if not usuario:

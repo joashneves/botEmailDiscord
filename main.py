@@ -7,6 +7,8 @@ from pathlib import Path
 from models.db import _Sessao
 
 from comandos.Tutorial import ViewTutorial
+from comandos.EnviarEmail import EmailView
+from comandos.ExibirSeguindos import ExibirSeguindoView
 
 load_dotenv()
 
@@ -22,6 +24,8 @@ class Bot_modificado(commands.Bot):
 
     async def setup_hook(self):
         self.add_view(ViewTutorial())
+        self.add_view(EmailView())
+        self.add_view(ExibirSeguindoView())
 
 bot = Bot_modificado()
 
