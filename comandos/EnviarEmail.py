@@ -15,16 +15,19 @@ class EmailView(discord.ui.View):
         self.titulo = titulo
         self.mensagem = mensagem
         self.imagem = imagem
-        self.link = link
+        self.link = link or ""
         self.fuso_brasilia = pytz.timezone("America/Sao_Paulo")
 
 
     def get_embem(self):
+        print(self.link)
         embed = discord.Embed(
             title=f"{self.titulo}",
             description=f"{self.mensagem}",
+            url=f"{self.link}",
             color=discord.Color.blue(),
         )
+
         if self.imagem:
             embed.set_image(url=self.imagem)
         agora = datetime.now(self.fuso_brasilia)
@@ -33,11 +36,10 @@ class EmailView(discord.ui.View):
                 text=f"Enviado em: {agora_formatado}",
             )
         embed.set_author(name=self.apelido, icon_url=self.usuario.display_avatar.url)
-        if self.link:
-            embed.set_author(name=self.apelido, icon_url=self.usuario.display_avatar.url, url=self.link)
+
         return embed
 
-    @discord.ui.button(label="Seguir", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="Seguir", custom_id="botao_seguir_email", style=discord.ButtonStyle.primary)
     async def seguir_botao(self, interaction: discord.Interaction, button: discord.ui.Button):
         usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
         if not usuario:
@@ -54,7 +56,7 @@ class EmailView(discord.ui.View):
                 await interaction.response.send_message(f"Voce ja esta seguindo {self.usuario.name}!", ephemeral=True)
             return
 
-    @discord.ui.button(label="deixar de seguir", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="deixar de seguir",custom_id="botao_deixar_seguir_email", style=discord.ButtonStyle.red)
     async def deixar_seguir(self, interaction: discord.Interaction, button: discord.ui.Button):
         usuario = Manipular_Usuario.Obter_usuario(interaction.user.id)
         if not usuario:

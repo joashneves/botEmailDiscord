@@ -75,7 +75,7 @@ class Perfil(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="perfil", description="Captura um perfil ou seu proprio")
+    @app_commands.command(name="perfil", description="Exibe um perfil ou seu proprio")
     async def exibir_perfil(self, interaction: discord.Interaction, usuario: discord.User = None):
         usuario = (usuario or interaction.user)
         usuario_encontrado = Manipular_Usuario.Obter_usuario(usuario.id)
