@@ -15,16 +15,19 @@ class EmailView(discord.ui.View):
         self.titulo = titulo
         self.mensagem = mensagem
         self.imagem = imagem
-        self.link = link
+        self.link = link or ""
         self.fuso_brasilia = pytz.timezone("America/Sao_Paulo")
 
 
     def get_embem(self):
+        print(self.link)
         embed = discord.Embed(
             title=f"{self.titulo}",
             description=f"{self.mensagem}",
+            url=f"{self.link}",
             color=discord.Color.blue(),
         )
+
         if self.imagem:
             embed.set_image(url=self.imagem)
         agora = datetime.now(self.fuso_brasilia)
@@ -33,8 +36,7 @@ class EmailView(discord.ui.View):
                 text=f"Enviado em: {agora_formatado}",
             )
         embed.set_author(name=self.apelido, icon_url=self.usuario.display_avatar.url)
-        if self.link:
-            embed.set_author(name=self.apelido, icon_url=self.usuario.display_avatar.url, url=self.link)
+
         return embed
 
     @discord.ui.button(label="Seguir", style=discord.ButtonStyle.primary)
